@@ -1,29 +1,36 @@
-export function createImageObject(data, callback) {
+export function createImageObject(data, callback, canvasWidth) {
 	const canvas = document.getElementById('canvas')
 
-	if (data.target.files[0]) {
-		const uploadedFile = data.target.files[0]
+	if (data.files[0]) {
+		const uploadedFile = data.files[0]
 		const temporaryObjectURL = URL.createObjectURL(uploadedFile)
 		let img = new Image()
 
 		let ctx = canvas.getContext('2d')
-		// let img = new Image()
-		// imgInstance.src = temporaryObjectURL
-		// imgInstance.onload = () => {
-		// 	console.log(this)
-		// }
 
+		img.src = temporaryObjectURL
+		img.style.border = '1px solid'
 		img.onload = () => {
-			ctx.drawImage(img, 0, 0, 600, 831, 0, 0, 600, 600 * 1.385)
+			console.log(img.width, canvasWidth)
+			ctx.drawImage(
+				img,
+				0,
+				0,
+				img.width,
+				img.width * 1.385,
+				0,
+				0,
+				canvasWidth,
+				canvasWidth * 1.385
+			)
 			ctx.font = `${600 / 20}px Arial`
 			ctx.fillText('Hello', 600 / 10, 831 / 10)
-			console.log(canvas.offsetWidth)
 		}
-		img.src = temporaryObjectURL
+
 		// img.src =
 		// 	'https://cdn.shopify.com/s/files/1/0379/3692/2669/products/UTS127NATBLK_600x.jpg?v=1601910002?v=123'
 
-		callback((pre) => data.target.files[0].name)
+		callback((pre) => true)
 	} else {
 		canvas.removeAttribute('src')
 		callback((pre) => null)

@@ -1,12 +1,12 @@
 import { Box, FormLabel, Image, Input, Link, Stack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { createImageObject } from '../utils/createImageObject'
+import { resetImageObject } from '../utils/resetImageObject'
 
 export const Canvas = () => {
 	const [canvasWidth, setCanvasWidth] = useState(600)
 	const [isUpload, setIsUpload] = useState(null)
-
-	useEffect(() => {}, [canvasWidth])
+	const [nw, setnw] = useState(window.innerWidth)
 
 	useEffect(() => {
 		if (isUpload) {
@@ -14,33 +14,30 @@ export const Canvas = () => {
 			// downloadLink.setAttribute('href', document.querySelector('.img').src)
 		}
 
-		// let canvas = document.getElementById('canvas')
-		// let ctx = canvas.getContext('2d')
-		// let img = new Image()
-
-		// img.onload = () => {
-		// 	canvas.setAttribute('border', '1px solid')
-		// 	ctx.drawImage(img, 0, 0, 600, 831, 0, 0, canvasWidth, canvasWidth * 1.385)
-		// 	ctx.font = `${canvasWidth / 8}px Arial`
-		// 	ctx.fillText('Hello', canvasWidth / 3, canvasWidth / 2)
-		// }
-		// img.src =
-		// 	'https://cdn.shopify.com/s/files/1/0379/3692/2669/products/UTS127NATBLK_600x.jpg?v=1601910002?v=123'
-		function resize() {
-			setCanvasWidth(window.innerWidth / 2)
-		}
-
-		window.addEventListener('resize', resize)
-		return () => window.removeEventListener('resize', resize)
+		window.addEventListener('resize', print)
+		return () => window.removeEventListener('resize', print)
 	}, [isUpload])
 
+	useEffect(() => {
+		document.querySelector('.imgInput').addEventListener('change', print)
+		return () =>
+			document.querySelector('.imgInput').removeEventListener('change', print)
+	}, [])
+
+	function print() {
+		let input = document.querySelector('.imgInput')
+		setCanvasWidth(window.innerWidth * 0.9)
+
+		createImageObject(input, setIsUpload, window.innerWidth * 0.9)
+	}
+
 	return (
-		<Box w="100%" border="1px solid" h="100vh">
+		<Box w="100%" h="100vh">
 			<canvas
 				id="canvas"
 				width={canvasWidth}
 				height={canvasWidth * 1.385}
-				style={{ border: '1px solid red' }}
+				style={{ border: '1px solid red', margin: '0 auto' }}
 			/>
 
 			<Box
@@ -58,9 +55,6 @@ export const Canvas = () => {
 						className="imgInput"
 						type="file"
 						accept="image/*"
-						onChange={(e) => {
-							createImageObject(e, setIsUpload)
-						}}
 						w="300px"
 						maxW="95vw"
 					/>
@@ -85,10 +79,8 @@ export const Canvas = () => {
 							<Box
 								onClick={() => {
 									const canvas = document.getElementById('canvas')
-									let ctx = canvas.getContext('2d')
-									ctx.drawImage('', 0, 0, 0, 0, 0, 0)
-									document.querySelector('.imgInput').value = null
-									setIsUpload((pre) => null)
+									const input = document.querySelector('.imgInput')
+									resetImageObject(canvas, input, setIsUpload)
 								}}
 							>
 								清除圖片
