@@ -7,6 +7,7 @@
 
 1. 輸入字樣於 canvas 置中
    https://stackoverflow.com/questions/13771310/center-proportional-font-text-in-an-html5-canvas
+   https://developer.mozilla.org/zh-TW/docs/Web/API/Canvas_API/Tutorial/Drawing_text
 
 2. sample
    https://luniform.com/en/products/sac-lunch-no-91?variant=34682728972333
