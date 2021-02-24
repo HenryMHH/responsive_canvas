@@ -1,4 +1,4 @@
-export function createImageObject(data, callback, canvasWidth) {
+export function createImageObject(data, cb, canvasWidth, wording) {
 	const canvas = document.getElementById('canvas')
 
 	if (data.files[0]) {
@@ -11,7 +11,6 @@ export function createImageObject(data, callback, canvasWidth) {
 		img.src = temporaryObjectURL
 		img.style.border = '1px solid'
 		img.onload = () => {
-			console.log(img.width, canvasWidth)
 			ctx.drawImage(
 				img,
 				0,
@@ -21,18 +20,18 @@ export function createImageObject(data, callback, canvasWidth) {
 				0,
 				0,
 				canvasWidth,
-				canvasWidth * 1.385
+				(canvasWidth * img.height) / img.width
 			)
-			ctx.font = `${600 / 20}px Arial`
-			ctx.fillText('Hello', 600 / 10, 831 / 10)
+			ctx.font = `${canvasWidth / 14}px Arial`
+
+			let textWidth = ctx.measureText(wording).width
+
+			ctx.fillText(wording, canvasWidth / 2 - textWidth / 2, canvasWidth / 1.2)
 		}
 
-		// img.src =
-		// 	'https://cdn.shopify.com/s/files/1/0379/3692/2669/products/UTS127NATBLK_600x.jpg?v=1601910002?v=123'
-
-		callback((pre) => true)
+		cb((pre) => true)
 	} else {
 		canvas.removeAttribute('src')
-		callback((pre) => null)
+		cb((pre) => null)
 	}
 }

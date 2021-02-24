@@ -1,4 +1,4 @@
-import { Box, FormLabel, Image, Input, Link, Stack } from '@chakra-ui/react'
+import { Box, FormLabel, Input, Link, Stack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { createImageObject } from '../utils/createImageObject'
 import { resetImageObject } from '../utils/resetImageObject'
@@ -6,17 +6,11 @@ import { resetImageObject } from '../utils/resetImageObject'
 export const Canvas = () => {
 	const [canvasWidth, setCanvasWidth] = useState(600)
 	const [isUpload, setIsUpload] = useState(null)
-	const [nw, setnw] = useState(window.innerWidth)
 
 	useEffect(() => {
-		if (isUpload) {
-			// const downloadLink = document.querySelector('.downloadLink')
-			// downloadLink.setAttribute('href', document.querySelector('.img').src)
-		}
-
 		window.addEventListener('resize', print)
 		return () => window.removeEventListener('resize', print)
-	}, [isUpload])
+	}, [])
 
 	useEffect(() => {
 		document.querySelector('.imgInput').addEventListener('change', print)
@@ -24,11 +18,34 @@ export const Canvas = () => {
 			document.querySelector('.imgInput').removeEventListener('change', print)
 	}, [])
 
+	useEffect(() => {
+		document.querySelector('.wording').addEventListener('keyup', print)
+		return () =>
+			document.querySelector('.wording').removeEventListener('keyup', print)
+	}, [])
+
+	useEffect(() => {
+		if (window.innerWidth < 600) {
+			setCanvasWidth(window.innerWidth)
+		}
+	}, [])
+
 	function print() {
 		let input = document.querySelector('.imgInput')
-		setCanvasWidth(window.innerWidth * 0.9)
+		let wording = document.querySelector('.wording')
 
-		createImageObject(input, setIsUpload, window.innerWidth * 0.9)
+		if (window.innerWidth > canvasWidth) {
+			setCanvasWidth(canvasWidth)
+			createImageObject(input, setIsUpload, canvasWidth, wording.value)
+		}
+		if (window.innerWidth > canvasWidth && window.innerWidth < 600) {
+			setCanvasWidth(window.innerWidth)
+			createImageObject(input, setIsUpload, window.innerWidth, wording.value)
+		}
+		if (window.innerWidth < canvasWidth) {
+			setCanvasWidth(window.innerWidth)
+			createImageObject(input, setIsUpload, window.innerWidth, wording.value)
+		}
 	}
 
 	return (
@@ -37,7 +54,7 @@ export const Canvas = () => {
 				id="canvas"
 				width={canvasWidth}
 				height={canvasWidth * 1.385}
-				style={{ border: '1px solid red', margin: '0 auto' }}
+				style={{ margin: '0 auto' }}
 			/>
 
 			<Box
@@ -60,7 +77,14 @@ export const Canvas = () => {
 					/>
 					<Box>
 						<FormLabel mb="0">輸入文字</FormLabel>
-						<Input placeholder="輸入字樣" w="300px" maxW="95vw" />
+						<Input
+							placeholder="輸入字樣"
+							w="300px"
+							maxW="95vw"
+							type="text"
+							maxLength="4"
+							className="wording"
+						/>
 					</Box>
 
 					{isUpload ? (
