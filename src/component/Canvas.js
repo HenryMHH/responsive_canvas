@@ -10,9 +10,10 @@ export const Canvas = () => {
 	useEffect(() => {
 		window.addEventListener('resize', print)
 		return () => window.removeEventListener('resize', print)
-	}, [])
+	})
 
 	useEffect(() => {
+		console.log(456)
 		document.querySelector('.imgInput').addEventListener('change', print)
 		return () =>
 			document.querySelector('.imgInput').removeEventListener('change', print)
@@ -33,6 +34,7 @@ export const Canvas = () => {
 	function print() {
 		let input = document.querySelector('.imgInput')
 		let wording = document.querySelector('.wording')
+		console.log(canvasWidth)
 
 		if (window.innerWidth > canvasWidth) {
 			setCanvasWidth(canvasWidth)
